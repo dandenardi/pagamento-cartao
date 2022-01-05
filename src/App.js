@@ -1,23 +1,54 @@
-import logo from './logo.svg';
+
+import React from 'react';
+import { useEffect, useState } from 'react';
+import api from './services/api';
+
+
 import './App.css';
 
+
 function App() {
+
+  const [users, setUsers] = useState([]);
+
+  useEffect (() => {
+
+    async function loadUsers(){
+      //usuarios carregados da baseURL
+      const response = await api.get('');
+      setUsers(response.data);
+    }
+
+    loadUsers();
+
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Lista de Usuários</h1>
+      <div className="content">
+        {users.map((user) => {
+          return(
+            <article className="users" key={user.id}>
+              <div className="picture">
+                <img src={user.img} alt="imagem de usuário"></img>
+              </div>
+              <div className='user-info'>
+                <div className='name'>
+                  Nome: {user.name}
+                </div>
+                <div className='user-id'>
+                  Id: {user.id}
+                  Username: {user.username}
+                </div>
+              </div>
+              
+              <button>Pagar</button>
+                
+            </article>
+          )
+        })}
+      </div>
     </div>
   );
 }
