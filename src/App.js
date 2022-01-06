@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { useEffect, useState } from 'react';
-import api from './services/api';
+import apiUsers from './services/apiUsers';
+import Modal from './components/Modal';
 
 
 import './App.css';
@@ -11,17 +12,26 @@ function App() {
 
   const [users, setUsers] = useState([]);
 
+  const [showPayModal, setShowPayModal] = useState(false);
+  const [detail, setDetail] = useState();
+
   useEffect (() => {
 
     async function loadUsers(){
       //usuarios carregados da baseURL
-      const response = await api.get('');
+      const response = await apiUsers.get('');
       setUsers(response.data);
     }
 
     loadUsers();
 
   }, []);
+
+  function togglePayModal(user){
+    //abre e fecha o modal
+    setShowPayModal(!showPayModal);
+    setDetail(user);
+  }
 
   return (
     <div className="App">
@@ -43,12 +53,22 @@ function App() {
                 </div>
               </div>
               
-              <button>Pagar</button>
+              <button onClick={ () => togglePayModal(user) }>Pagar</button>
                 
             </article>
           )
         })}
       </div>
+
+        {showPayModal && (
+          <Modal 
+            content={detail}
+            close={togglePayModal}
+          >
+
+          </Modal>
+        )}
+
     </div>
   );
 }
