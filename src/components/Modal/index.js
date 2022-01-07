@@ -47,6 +47,45 @@ export default function Modal(content, close){
 
     let cards = getLastDigits(); 
 
+    
+    let insertedValue = "";
+    function handleValueInput(e){
+
+        let payAmount;
+        e.preventDefault();
+        console.log(typeof (e.key));
+        var valuePattern = /[0-9]/g; 
+        
+        if (valuePattern.test(e.key)){
+            //so aceita numeros, ponto e virgula
+            insertedValue += e.key;
+            e.target.value = applyMask(insertedValue); 
+            payAmount = e.target.value;
+
+        }else{
+            alert('Apenas números são permitidos neste campo!');
+            return false;
+        };
+        console.log(payAmount);
+        return payAmount;
+        
+    }
+    
+    function handleCardNumber(e){
+       
+        e.preventDefault();
+        setCardNumber(e.target.value);
+        
+        return cardNumber;
+    }
+
+    function handlePayment(e){
+        
+        e.preventDefault();
+        setPayValue(e.target.value);
+
+    }
+
     // Mascará para número
     function applyMask(num){
         //let num ="";
@@ -73,27 +112,6 @@ export default function Modal(content, close){
     
     };
 
-    let insertedValue = "";
-    function validateValueField(e){
-        //validacoes funcionam, porem o usuario so consegue colocar centavos mediante ponto. Virgula faz a funcao retornar NAN
-        e.preventDefault();
-        
-        var valuePattern = /[0-9]/g; 
-    
-        if (valuePattern.test(e.key)){
-            //so aceita numeros, ponto e virgula
-            //o ideal e que o usuario nao possa incluir pontos ou virgulas e que isso seja adicionado automaticamente
-            console.log(e.key);
-            insertedValue += e.key;
-            e.target.value = applyMask(insertedValue); 
-
-        }else{
-            alert('Apenas números são permitidos neste campo!');
-            return false;
-        };
-        
-        
-    }
 
     function cleanFields(e){
         //limpa os campos para proxima insercao
@@ -114,32 +132,24 @@ export default function Modal(content, close){
         }
     }
 
-    function handlePayment(e){
-
-        e.preventDefault();
-        if(e.target.value != 0){
-            setPayValue(e.target.value);
-        }else{
-            alert('O campo valor deve ser numérico e não pode ser vazio');
-        }
-        return payValue;
-    }
-    
-    function handleCardNumber(e){
-        e.preventDefault();
-        setCardNumber(e.target.value);
-        return cardNumber;
-    }
-
-    function handlePayment(e){
+    function checkTransferData(){
+        //verifica os dados do cartao, pagamento e destinatario, exibindo o modal correspondente
+        let userName = content.content.name;
+        console.log('Checking transfer information!');
         
-        e.preventDefault();
-        console.log('handlePayment funcionando!')
-        if (cardNumber == 'card0'){
-            console.log('ModalSuccess()');
+        if(cardNumber!=='card[0]' || !userName || !(payValue)){
+            //Modal de erro no pagamento
+            return false;
         }else{
-            console.log('ModalFailure()');
+            //Modal de pagamento concluido com sucesso
+            handleTransfer(cardNumber, payValue, userName);
+            return true;
         }
+    }
+    function handleTransfer(card, amount, person){
+        //recebe o numero do cartao (valido), o valor a transferir e o nome do destinatario e envia os dados para a API
+    
+        
     }
 
     return(
@@ -152,13 +162,13 @@ export default function Modal(content, close){
                     
                     <h2>Pagamento para {content.content.name}</h2>
                     <label>Quanto será enviado?</label>
-                    <input className="pay-value" onKeyUp={handleBackspace} onFocus={cleanFields} onKeyPress={validateValueField} onChange={handlePayment}></input>
+                    <input className="pay-value" onKeyUp={handleBackspace} onFocus={cleanFields} onKeyPress={handleValueInput} onChange={handlePayment}></input>
                     <select value={cardNumber} onChange={handleCardNumber}>
                         <option value="card0">{cards[0]}</option>
                         <option value="card1">{cards[1]}</option>
 
                     </select>
-                    <button onClick={handlePayment}>Pagar</button>
+                    <button onClick={checkTransferData}>Pagar</button>
                 
                     
 
