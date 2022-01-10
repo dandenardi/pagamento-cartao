@@ -2,7 +2,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import apiUsers from './services/apiUsers';
-import Modal from './components/Modal';
+import Modal from './components/ModalTransaction';
 
 
 import './App.css';
@@ -29,6 +29,7 @@ function App() {
 
   function togglePayModal(user){
     //abre e fecha o modal
+    
     setShowPayModal(!showPayModal);
     setDetail(user);
   }
