@@ -2,18 +2,24 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import apiUsers from './services/apiUsers';
-import Modal from './components/ModalTransaction';
 
 
 import './App.css';
-
+import Modal from './components/Modal/Modal';
+import useModal from './components/useModal';
 
 function App() {
 
   const [users, setUsers] = useState([]);
+  const {isShowing, toggle} = useModal();
+  //const [showPayModal, setShowPayModal] = useState(false);
+  const [detail, setDetail] = useState({
+    username: '',
+    id: 0,
+    name: '',
 
-  const [showPayModal, setShowPayModal] = useState(false);
-  const [detail, setDetail] = useState();
+  });
+  
 
   useEffect (() => {
 
@@ -26,12 +32,12 @@ function App() {
     loadUsers();
 
   }, []);
-
-  function togglePayModal(user){
-    //abre e fecha o modal
+  
+ 
+  function toggleModal(user){
+    setDetail({username: user.username, id: user.id, name: user.name, })
     
-    setShowPayModal(!showPayModal);
-    setDetail(user);
+    return(detail);
   }
 
   return (
@@ -54,24 +60,32 @@ function App() {
                 </div>
               </div>
               
-              <button onClick={ () => togglePayModal(user) }>Pagar</button>
-                
+              <button onClick={ () => toggleModal(user) }>Pagar</button> 
+              
             </article>
           )
         })}
       </div>
-
-        {showPayModal && (
+      <Modal
+        //abre o modal
+        isShowing={isShowing}
+        //permite fechar
+        hide={toggle}
+        //recebe os dados do usuario
+        
+      />
+        {/* {showPayModal && (
           <Modal 
             content={detail}
             close={togglePayModal}
           >
 
-          </Modal>
-        )}
+          </Modal> 
+        )}*/}
 
     </div>
   );
 }
 
 export default App;
+

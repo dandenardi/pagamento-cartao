@@ -4,6 +4,7 @@ const useModal = () => {
 
 
     const [isShowing, setIsShowing] = useState(false);
+    
 
     function toggle(){
         setIsShowing(!isShowing);
@@ -16,3 +17,11 @@ const useModal = () => {
 };
 
 export default useModal;
+
+/* 
+  function togglePayModal(user){
+    //abre e fecha o modal
+    
+    setShowPayModal(!showPayModal);
+    setDetail(user);
+  } */

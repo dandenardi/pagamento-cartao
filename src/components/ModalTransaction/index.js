@@ -43,7 +43,7 @@ function getLastDigits(){
 };
 
 
-export default function Modal(content, close){
+export default function ModalTransaction(content, close){
     
     
     const [payValue, setPayValue] =  useState(0);
