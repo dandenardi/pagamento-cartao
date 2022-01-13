@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import './modal.css';
 
 import apiTransactions from '../../services/apiTransactions';
-import ModalReceipt from '../ModalReceipt';
 
 
 function getLastDigits(){
@@ -43,13 +42,13 @@ function getLastDigits(){
 };
 
 
-export default function ModalTransaction(content, close){
+export default function ModalTransaction(conteudo, close){
     
     
     const [payValue, setPayValue] =  useState(0);
     const [cardId, setCardId] = useState('card0');
-    const [situation, setSituation] = useState(undefined);
-    const [showPayModal, setShowPayModal] = useState();
+    const [situation, setSituation] = useState();
+    const [transaction, setTransaction] = useState(true);
 
     const [transfers, setTransfers] = useState([]);
 
@@ -59,17 +58,14 @@ export default function ModalTransaction(content, close){
           //transacoes carregadas da BaseUrl
           const response = await apiTransactions.get('');
           setTransfers(response.data);
+          console.log(transfers);
         }
     
         loadTransfers();
     
-    }, []);
+    }, [transfers]);
     let cardsFrag = getLastDigits();
     
-    function togglePayModal(){
-        //abre e fecha o modal
-        setShowPayModal(!showPayModal);
-    }
 
     function handleCardId(e){
         e.preventDefault();
@@ -87,14 +83,13 @@ export default function ModalTransaction(content, close){
 
     function checkTransferData(){
         //verifica os dados do cartao, pagamento e destinatario, exibindo o modal correspondente
-        console.log(cardId);
-        let userName = content.content.name;
-        
+        setTransaction(!transaction);
+        let userName = conteudo.name;
         
         if(cardId!=='card0'){
             //Modal de erro no pagamento
             setSituation(false);
-            ModalReceipt(situation);
+            informSituation(situation);
             return false;
         }else{
             handleTransfer(payValue, userName);
@@ -128,9 +123,9 @@ export default function ModalTransaction(content, close){
         })
         .then(function (response) {
             //Modal de sucesso!
+            console.log(response);
             setSituation(true);
-            ModalReceipt(situation);
-            
+            informSituation(situation);
             
         })
         .catch(function (error) {
@@ -138,35 +133,78 @@ export default function ModalTransaction(content, close){
     
         });
         
-        
     }
 
-
-    return(
+    function transactionForm(){
         
-        
-        <div className="modal">
-            <div className="container">
-                <button className="close" onClick= { () => close } >X</button>
-                <div className='transferencia-em-andamento'>
-                    
-                    <h2>Pagamento para {content.content.name}</h2>
+        if(transaction){
+            return(
+                <div className='ongoing-transfer'>
+                        
+                    <h2>Pagamento para {conteudo.conteudo.name}</h2>
                     <label>Quanto será enviado?</label>
                     <input className="pay-value" type='number' onChange={handlePayment}></input>
                     <select onChange={handleCardId}>
                         <option value="card0">{cardsFrag[0]}</option>
                         <option value="card1">{cardsFrag[1]}</option>
-
+    
                     </select>
                     <button onClick={checkTransferData}>Pagar</button>
                 
+            </div>
+            )
+        }else{
+            return(null)
+        }
+        
+                
+    }
+
+    function informSituation(status){
+        
+        
+        if (status === true){
+            
+            return(
+                <div className='transaction-ok'>
+                    
+                    <h2>Recibo do pagamento</h2>
+                    <p>
+                        O pagamento foi concluido com sucesso
+                    </p> 
+            
                     
 
                 </div>
+            )
+        }
+        if (status === false){
+                
+            return(
+            
+                <div className='transaction-fail'>
+                    <h2>Recibo do pagamento</h2>
+                        <p>
+                            O pagamento<strong> não </strong>foi concluido com sucesso
+                        </p> 
 
+                    </div>
+            )
+        }
+    }
+
+    return(
+        
+        <div className="modal">
+            <div className="container">
+                <button className="close" onClick= { close } >X</button>
+                
+                {transactionForm()}
+                {informSituation(situation)}
+                
             </div>
-
-        </div>
+        </div>     
+                
     )
 }
 

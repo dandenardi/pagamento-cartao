@@ -34,3 +34,7 @@
     padding: 4px 15px;
     border-radius: 5px;
 }
+
+.hidden {
+    display: none;
+}

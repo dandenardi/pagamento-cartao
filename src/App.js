@@ -3,23 +3,20 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import apiUsers from './services/apiUsers';
 
+import ModalTransaction from './components/ModalTransaction';
 
 import './App.css';
-import Modal from './components/Modal/Modal';
-import useModal from './components/useModal';
+
 
 function App() {
 
   const [users, setUsers] = useState([]);
-  const {isShowing, toggle} = useModal();
-  //const [showPayModal, setShowPayModal] = useState(false);
-  const [detail, setDetail] = useState({
-    username: '',
-    id: 0,
-    name: '',
+  const [showPostModal, setShowPostModal] = useState(false);
+  //conteudo do usuario clicado
 
-  });
+  const [detail, setDetail] = useState();
   
+
 
   useEffect (() => {
 
@@ -34,10 +31,9 @@ function App() {
   }, []);
   
  
-  function toggleModal(user){
-    setDetail({username: user.username, id: user.id, name: user.name, })
-    
-    return(detail);
+  function togglePostModal(user){
+    setShowPostModal(!showPostModal) //se falso muda para verdadeiro e vice-versa
+    setDetail(user);
   }
 
   return (
@@ -45,6 +41,7 @@ function App() {
       <h1>Lista de Usuários</h1>
       <div className="content">
         {users.map((user) => {
+          //renderiza todos os usuarios contidos na API
           return(
             <article className="users" key={user.id}>
               <div className="picture">
@@ -60,29 +57,16 @@ function App() {
                 </div>
               </div>
               
-              <button onClick={ () => toggleModal(user) }>Pagar</button> 
+              <button onClick={ () => togglePostModal(user) }>Pagar</button> 
               
             </article>
           )
         })}
       </div>
-      <Modal
-        //abre o modal
-        isShowing={isShowing}
-        //permite fechar
-        hide={toggle}
-        //recebe os dados do usuario
-        
-      />
-        {/* {showPayModal && (
-          <Modal 
-            content={detail}
-            close={togglePayModal}
-          >
-
-          </Modal> 
-        )}*/}
-
+       {showPostModal && (<ModalTransaction
+          conteudo={detail}
+          close={togglePostModal}
+        />)}
     </div>
   );
 }

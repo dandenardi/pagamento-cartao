@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState } from 'react';
 import './modal.css';
 
 export default function ModalReceipt(stats){
