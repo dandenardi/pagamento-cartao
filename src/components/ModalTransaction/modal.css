@@ -21,6 +21,7 @@
     box-shadow: 0 0 20px rgba(0,0,0, 0.8);
 }
 
+
 .close{
     background-color: sandybrown;
     border: 0;
@@ -35,6 +36,77 @@
     border-radius: 5px;
 }
 
-.hidden {
-    display: none;
+
+.container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.ongoing-transfer{
+    display: flex;
+    flex-direction: column;
+}
+
+.header{
+    
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    background-color: #474974;
+    color: white;
+}
+.header h2{
+    margin-left: 5%;
+}
+
+.username{
+    color: yellow;
+}
+
+.payment-form{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 10%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pay-value{
+    
+    width: 80%;
+    font-size: x-large;
+    height: 40px;
+    border-radius: 5%;
+    margin-bottom: 2%;
+}
+
+.card-info{
+    width: 100%;
+}
+
+.card-selector{
+
+    width: 80%;
+    font-size: large;
+    height: 40px;
+    border-radius: 5%;
+    margin-bottom: 2%;
+}
+
+.payment-form button{
+
+    width: 20%;
+    font-size: x-large;
+    height: 40px;
+    border-radius: 5%;
+    margin-bottom: 2%;
+}
+
+.payment-feedback{
+
+    text-align: center;
+    font-size: x-large;
+    
 }

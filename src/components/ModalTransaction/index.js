@@ -42,7 +42,7 @@ function getLastDigits(){
 };
 
 
-export default function ModalTransaction(conteudo, close){
+export default function ModalTransaction({ conteudo, close }){
     
     
     const [payValue, setPayValue] =  useState(0);
@@ -58,7 +58,6 @@ export default function ModalTransaction(conteudo, close){
           //transacoes carregadas da BaseUrl
           const response = await apiTransactions.get('');
           setTransfers(response.data);
-          console.log(transfers);
         }
     
         loadTransfers();
@@ -84,7 +83,7 @@ export default function ModalTransaction(conteudo, close){
     function checkTransferData(){
         //verifica os dados do cartao, pagamento e destinatario, exibindo o modal correspondente
         setTransaction(!transaction);
-        let userName = conteudo.name;
+        console.log(conteudo.name);
         
         if(cardId!=='card0'){
             //Modal de erro no pagamento
@@ -92,7 +91,7 @@ export default function ModalTransaction(conteudo, close){
             informSituation(situation);
             return false;
         }else{
-            handleTransfer(payValue, userName);
+            handleTransfer(payValue, conteudo.name);
             return true;
         }
     }
@@ -140,17 +139,28 @@ export default function ModalTransaction(conteudo, close){
         if(transaction){
             return(
                 <div className='ongoing-transfer'>
-                        
-                    <h2>Pagamento para {conteudo.conteudo.name}</h2>
-                    <label>Quanto será enviado?</label>
-                    <input className="pay-value" type='number' onChange={handlePayment}></input>
-                    <select onChange={handleCardId}>
-                        <option value="card0">{cardsFrag[0]}</option>
-                        <option value="card1">{cardsFrag[1]}</option>
+                    <div className='header'>
+                        <h2>Pagamento para <span className='username'>{conteudo.name}</span></h2>
+                    </div>    
+                <div className='payment-form'>
+                    
+                    <input className="pay-value" type='number' placeholder='R$ 0,00' onChange={handlePayment}></input>
+
+                    
+                    <select className='card-selector' onChange={handleCardId}>
+                        <option value="card0">Cartão com final {cardsFrag[0]}</option>
+                        <option value="card1">Cartão com final {cardsFrag[1]}</option>
     
                     </select>
                     <button onClick={checkTransferData}>Pagar</button>
-                
+        
+                      
+                     
+                    
+  
+                  
+                </div>
+                    
             </div>
             )
         }else{
@@ -168,9 +178,11 @@ export default function ModalTransaction(conteudo, close){
             return(
                 <div className='transaction-ok'>
                     
-                    <h2>Recibo do pagamento</h2>
-                    <p>
-                        O pagamento foi concluido com sucesso
+                    <div className='header'>
+                        <h2>Recibo de pagamento</h2>
+                    </div>    
+                    <p className='payment-feedback'>
+                        O pagamento foi concluído com sucesso
                     </p> 
             
                     
@@ -183,13 +195,17 @@ export default function ModalTransaction(conteudo, close){
             return(
             
                 <div className='transaction-fail'>
-                    <h2>Recibo do pagamento</h2>
-                        <p>
-                            O pagamento<strong> não </strong>foi concluido com sucesso
+                    <div className='header'>
+                        <h2>Recibo de pagamento</h2>
+                    </div>                         
+                    <div>    
+                        <p className='payment-feedback'>
+                            O pagamento <strong>não</strong> foi concluído com sucesso
                         </p> 
 
                     </div>
-            )
+                </div>
+            )   
         }
     }
 

@@ -52,12 +52,12 @@ function App() {
                   Nome: {user.name}
                 </div>
                 <div className='user-id'>
-                  Id: {user.id}
+                  ID: {user.id}
                   Username: {user.username}
                 </div>
               </div>
               
-              <button onClick={ () => togglePostModal(user) }>Pagar</button> 
+              <button className='pay-btn' onClick={ () => togglePostModal(user) }>Pagar</button> 
               
             </article>
           )
