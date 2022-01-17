@@ -4,9 +4,10 @@ import './modal.css';
 
 import apiTransactions from '../../services/apiTransactions';
 
+let insertedValue = "";
 
 function getLastDigits(){
-   
+   //gera os 4 ultimos digitos do cartao para uso no select
     const cards = [
         // valid card
         {
@@ -54,6 +55,7 @@ export default function ModalTransaction({ conteudo, close }){
 
     useEffect (() => {
 
+        //permanece verdadeira enquanto a API eh consultada
         async function loadTransfers(){
           //transacoes carregadas da BaseUrl
           const response = await apiTransactions.get('');
@@ -61,18 +63,73 @@ export default function ModalTransaction({ conteudo, close }){
         }
     
         loadTransfers();
-    
+        //um erro no console indica vazamento de memoria. Como resolver??
     }, [transfers]);
+    
     let cardsFrag = getLastDigits();
     
-
     function handleCardId(e){
+        //salva em CardId o identificador do cartao, com base nos 4 ultimos digitos
         e.preventDefault();
         setCardId(e.target.value);
     }
 
-    function handlePayment(e){
+    
+    function validateValueField(e){
+        //validacoes funcionam, porem o usuario so consegue colocar centavos mediante ponto. Virgula faz a funcao retornar NAN
+        e.preventDefault();
         
+        var valuePattern = /[0-9]/g; 
+       
+        if (!valuePattern.test(e.key)){
+            //so aceita numeros, ponto e virgula
+            //o ideal e que o usuario nao possa incluir pontos ou virgulas e que isso seja adicionado automaticamente
+            alert('Apenas números são permitidos neste campo!');
+            return false;
+
+        }else{
+            insertedValue += e.key;
+            e.target.value = applyMask(insertedValue); 
+        };
+        
+        
+    }
+
+    function applyMask(num){
+        //let num ="";
+        
+        let value = "";
+        //converte para string
+        if (num.length === 0) {
+            value = "";
+            //impede que o valor inserido seja nulo
+        } else if (num.length === 1) {
+            value = "0,0" + num;
+            //para um caracter inserido, concatena com 0,0
+        } else if (num.length <= 2) {
+            value = "0," + num;
+            //para 2 caracteres, concatena com 0, (forma as casas decimais)
+        }else if (num.length <= 5) { 
+            value = num.substring(0, num.length-2) + ',' + num.substring(num.length-2, num.length);
+        }else {        
+            value = num.substring(0, num.length-5) + '.'  + num.substring(num.length-5, num.length-2) + ',' + num.substring(num.length-2, num.length);
+            //para valores acima de 5 casas (chega ao primeiro milhar), inclui . (padrao brasileiro)
+        };
+        console.log(value);
+        return value;
+        
+    };
+
+    function cleanFields(e){
+        //limpa os campos para proxima insercao
+        e.preventDefault();
+    
+        e.target.value = '';
+        insertedValue = '';    
+    }    
+
+    function handlePayment(e){
+        //funcao responsavel por atribuir o state de valor para o pagamento (payValue)
         e.preventDefault();
         
         setPayValue(e.target.value);
@@ -95,9 +152,9 @@ export default function ModalTransaction({ conteudo, close }){
             return true;
         }
     }
+
     function handleTransfer(amount, personId){
         //recebe o numero do cartao (valido), o valor a transferir e o nome do destinatario e envia os dados para a API
-        console.log('Carregado handleTransfer')
         
         let card = {
             card_number: '1111111111111111',
@@ -128,6 +185,9 @@ export default function ModalTransaction({ conteudo, close }){
             
         })
         .catch(function (error) {
+            //caso ocorram problemas na comunicacao com API, a transacao nao ocorre e o modal de erro eh exibido
+            setSituation(false);
+            informSituation(situation);
             console.log(error);
     
         });
@@ -135,7 +195,7 @@ export default function ModalTransaction({ conteudo, close }){
     }
 
     function transactionForm(){
-        
+        //funcao basica para envio de dados de transferencia (a primeira a ser exibida no modal)
         if(transaction){
             return(
                 <div className='ongoing-transfer'>
@@ -144,7 +204,7 @@ export default function ModalTransaction({ conteudo, close }){
                     </div>    
                 <div className='payment-form'>
                     
-                    <input className="pay-value" type='number' placeholder='R$ 0,00' onChange={handlePayment}></input>
+                    <input className="pay-value" placeholder='R$ 0,00' onKeyPress={validateValueField} onFocus={cleanFields} onChange={handlePayment}></input>
 
                     
                     <select className='card-selector' onChange={handleCardId}>
@@ -153,11 +213,7 @@ export default function ModalTransaction({ conteudo, close }){
     
                     </select>
                     <button onClick={checkTransferData}>Pagar</button>
-        
-                      
-                     
                     
-  
                   
                 </div>
                     
@@ -166,13 +222,11 @@ export default function ModalTransaction({ conteudo, close }){
         }else{
             return(null)
         }
-        
                 
     }
 
     function informSituation(status){
-        
-        
+        //funcao responsavel por exibir o modal correspondente, apos verificacao
         if (status === true){
             
             return(
@@ -184,8 +238,6 @@ export default function ModalTransaction({ conteudo, close }){
                     <p className='payment-feedback'>
                         O pagamento foi concluído com sucesso
                     </p> 
-            
-                    
 
                 </div>
             )
@@ -223,4 +275,3 @@ export default function ModalTransaction({ conteudo, close }){
                 
     )
 }
-
