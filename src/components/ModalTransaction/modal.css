@@ -11,7 +11,7 @@
 
 .modal .container{
     position: fixed;
-    max-width: 600px;
+    max-width: 500px;
     top: 15%;
     left: 0;
     right: 0;
@@ -33,13 +33,6 @@
     align-items: center;
     padding: 4px 15px;
     border-radius: 5px;
-}
-
-
-.container{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
 }
 
 .ongoing-transfer{
@@ -74,10 +67,12 @@
 
 .pay-value{
     
+    box-shadow: none;
     width: 80%;
     font-size: x-large;
     height: 40px;
-    border-radius: 5%;
+    border: 2px solid lightgray;
+    border-radius: 7px;
     margin-bottom: 2%;
 }
 
@@ -86,21 +81,31 @@
 }
 
 .card-selector{
-
+    background-color: white;
+    border: 2px solid lightgray;
     width: 80%;
-    font-size: large;
+    font-size: x-large;
     height: 40px;
-    border-radius: 5%;
+    border-radius: 7px;
     margin-bottom: 2%;
 }
 
 .payment-form button{
 
+    background-color: #efefef;
+    color: black;
     width: 20%;
     font-size: x-large;
     height: 40px;
-    border-radius: 5%;
+    border: 2px solid lightgray;
+    border-radius: 7px;
     margin-bottom: 2%;
+}
+
+.payment-form button:disabled{
+
+    color: gray;
+    cursor: not-allowed;
 }
 
 .payment-feedback{

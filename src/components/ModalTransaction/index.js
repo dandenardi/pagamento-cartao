@@ -143,12 +143,12 @@ export default function ModalTransaction({ conteudo, close }){
                     </div>    
                 <div className='payment-form'>
                     
-                    <input value={payValue || ''} pattern="^[0-9]*$"  className="pay-value" onChange={handlePayment}></input>
+                    <input value={payValue || ''} pattern="^[0-9]*$" placeholder="R$ 0,00"  className="pay-value" onChange={handlePayment}></input>
 
                     
                     <select className='card-selector' onChange={handleCardId}>
-                        <option value="card0">Cartão com final {cardsFrag[0]}</option>
-                        <option value="card1">Cartão com final {cardsFrag[1]}</option>
+                        <option className='card-selector' value="card0">Cartão com final {cardsFrag[0]}</option>
+                        <option className='card-selector' value="card1">Cartão com final {cardsFrag[1]}</option>
     
                     </select>
                     <button disabled={!payValue} onClick={checkTransferData}>Pagar</button>
