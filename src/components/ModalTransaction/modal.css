@@ -23,9 +23,8 @@
 
 
 .close{
-    background-color: sandybrown;
+    color:rgba(0,0,0, 0.5);
     border: 0;
-    color: #FFF;
     position: absolute;
     top: 15px;
     left: 15px;
